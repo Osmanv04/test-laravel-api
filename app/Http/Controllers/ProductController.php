@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use App\Http\Resources\ProductResource;
+use App\Http\Requests\StoreProductPriceRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-use App\Http\Requests\StoreProductPriceRequest;
 use App\Http\Resources\ProductPriceResource;
+use App\Http\Resources\ProductResource;
+use App\Models\Product;
 
 class ProductController extends Controller
 {
@@ -16,7 +16,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return ProductResource::collection(Product::with('currency','prices.currency')->get());
+        $products = Product::with('currency')->get();
+
+        return $this->successResponse(ProductResource::collection($products), 'Productos cargados correctamente');
     }
 
     /**
@@ -25,7 +27,8 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $product = Product::create($request->validated());
-        return ProductResource::make($product->load('currency'));
+
+        return $this->successResponse(new ProductResource($product->load('currency')), 'Producto creado correctamente', 201);
     }
 
     /**
@@ -33,8 +36,9 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = Product::with('currency','prices.currency')->findOrFail($id);
-        return ProductResource::make($product);
+        $product = Product::with('currency', 'prices.currency')->findOrFail($id);
+
+        return $this->successResponse(ProductResource::make($product), 'Producto cargado correctamente');
     }
 
     /**
@@ -44,7 +48,8 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $product->update($request->validated());
-        return ProductResource::make($product->load('currency'));
+
+        return $this->successResponse(ProductResource::make($product->load('currency')), 'Producto actualizado correctamente');
     }
 
     /**
@@ -54,19 +59,22 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $product->delete();
-        return response()->noContent();
+
+        return $this->successResponse(null, 'Producto eliminado correctamente', 204);
     }
 
     public function prices(string $id)
     {
         $product = Product::with('currency')->findOrFail($id);
-        return ProductPriceResource::collection($product->prices()->with('currency')->get());
+
+        return $this->successResponse(ProductPriceResource::collection($product->prices()->with('currency')->get()), 'Precios del producto cargados correctamente');
     }
 
     public function storePrice(StoreProductPriceRequest $request, string $id)
     {
         $product = Product::findOrFail($id);
         $productPrice = $product->prices()->create($request->validated());
-        return new ProductPriceResource($productPrice->load('currency'));
+
+        return $this->successResponse(new ProductPriceResource($productPrice->load('currency')), 'Precio del producto creado correctamente', 201);
     }
 }

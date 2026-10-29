@@ -31,4 +31,20 @@ class UpdateProductRequest extends FormRequest
             'currency_id' => 'sometimes|exists:currencies,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.string' => 'El nombre debe ser un texto.',
+            'name.max' => 'El nombre no puede tener más de 255 caracteres.',
+            'description.string' => 'La descripción debe ser un texto.',
+            'price.numeric' => 'El precio debe ser un número.',
+            'price.min' => 'El precio debe ser mayor o igual a 0.',
+            'currency_id.exists' => 'La divisa seleccionada no existe.',
+            'tax_cost.numeric' => 'El costo de impuestos debe ser un número.',
+            'tax_cost.min' => 'El costo de impuestos debe ser mayor o igual a 0.',
+            'manufacturing_cost.numeric' => 'El costo de fabricación debe ser un número.',
+            'manufacturing_cost.min' => 'El costo de fabricación debe ser mayor o igual a 0.',
+        ];
+    }
 }

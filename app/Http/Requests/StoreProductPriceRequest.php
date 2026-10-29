@@ -27,4 +27,15 @@ class StoreProductPriceRequest extends FormRequest
             'currency_id' => 'required|exists:currencies,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'price.required' => 'El precio es obligatorio.',
+            'price.numeric' => 'El precio debe ser un número.',
+            'price.min' => 'El precio debe ser mayor o igual a 0.',
+            'currency_id.required' => 'La divisa es obligatoria.',
+            'currency_id.exists' => 'La divisa seleccionada no existe.',
+        ];
+    }
 }
