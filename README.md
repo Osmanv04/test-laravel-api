@@ -1,58 +1,360 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Products API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API RESTful para gestión de productos con precios en múltiples divisas, desarrollada con Laravel 13.
 
-## About Laravel
+## Características
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- ✅ CRUD completo de productos
+- ✅ Gestión de precios en múltiples divisas
+- ✅ Autenticación con Laravel Sanctum
+- ✅ Validación de datos con mensajes personalizados
+- ✅ Respuestas JSON estandarizadas
+- ✅ Eloquent ORM para interacción con base de datos
+- ✅ API Resources para transformación de datos
+- ✅ Seeders para datos de prueba
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Requisitos
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.4 o superior
+- Composer
+- PostgreSQL
+- Node.js y NPM
 
-## Learning Laravel
+## Instalación
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. **Clonar el repositorio**
+   ```bash
+   git clone <url-del-repositorio>
+   cd test-laravel-api
+   ```
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. **Instalar dependencias**
+   ```bash
+   composer install
+   npm install
+   ```
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+3. **Configurar entorno**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Configurar la base de datos en `.env`:
+   ```env
+   DB_CONNECTION=pgsql
+   DB_HOST=127.0.0.1
+   DB_PORT=5432
+   DB_DATABASE=your_database
+   DB_USERNAME=your_username
+   DB_PASSWORD=your_password
+   ```
 
-## Agentic Development
+4. **Ejecutar migraciones y seeders**
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+5. **Iniciar servidor**
+   ```bash
+   php artisan serve
+   ```
 
-```bash
-composer require laravel/boost --dev
+## Credenciales de Prueba
 
-php artisan boost:install
+El seeder crea un usuario de prueba:
+- **Email:** test@example.com
+- **Password:** password
+
+## Documentación de la API
+
+La documentación completa está disponible en formato de colección de Postman:
+- Archivo: `postman_collection.json`
+- Importar en Postman: File → Import → Seleccionar el archivo
+
+### Flujo de Uso en Postman
+
+1. **Login**
+   - Ejecutar la request `POST /api/login`
+   - Copiar el token de la respuesta
+   - Pegar el token en la variable `token` de la colección
+
+2. **Usar endpoints protegidos**
+   - Todos los endpoints de productos requieren autenticación
+   - La autenticación se configura automáticamente desde la variable `token`
+
+## Endpoints
+
+### Autenticación
+
+#### Login
+- **POST** `/api/login`
+- **Body:**
+  ```json
+  {
+    "email": "test@example.com",
+    "password": "password"
+  }
+  ```
+- **Respuesta:**
+  ```json
+  {
+    "success": true,
+    "message": "Login exitoso",
+    "data": {
+      "token": "1|abc123...",
+      "user": {
+        "id": 1,
+        "name": "Test User",
+        "email": "test@example.com"
+      }
+    }
+  }
+  ```
+
+#### Logout
+- **POST** `/api/logout`
+- **Headers:** `Authorization: Bearer {token}`
+- **Respuesta:**
+  ```json
+  {
+    "success": true,
+    "message": "Sesión cerrada exitosamente",
+    "data": null
+  }
+  ```
+
+### Divisas
+
+#### Obtener Divisas
+- **GET** `/api/currencies`
+- **Descripción:** Obtiene todas las divisas disponibles
+- **Respuesta:**
+  ```json
+  {
+    "success": true,
+    "message": "Divisas cargadas correctamente",
+    "data": [
+      {
+        "id": 1,
+        "name": "USD",
+        "symbol": "$",
+        "exchange_rate": "1.000000"
+      },
+      {
+        "id": 2,
+        "name": "EUR",
+        "symbol": "€",
+        "exchange_rate": "0.920000"
+      },
+      {
+        "id": 3,
+        "name": "VES",
+        "symbol": "Bs",
+        "exchange_rate": "888.118300"
+      }
+    ]
+  }
+  ```
+
+### Productos
+
+#### Obtener Todos los Productos
+- **GET** `/api/products`
+- **Headers:** `Authorization: Bearer {token}`
+- **Respuesta:**
+  ```json
+  {
+    "success": true,
+    "message": "Productos cargados correctamente",
+    "data": [
+      {
+        "id": 1,
+        "name": "Laptop HP",
+        "description": "Laptop HP Pavilion 15.6\" Intel i5 8GB RAM 256GB SSD",
+        "price": "799.99",
+        "tax_cost": "64.00",
+        "manufacturing_cost": "450.00",
+        "currency": {
+          "id": 1,
+          "name": "USD",
+          "symbol": "$",
+          "exchange_rate": "1.000000"
+        },
+        "prices": []
+      }
+    ]
+  }
+  ```
+
+#### Crear Producto
+- **POST** `/api/products`
+- **Headers:** `Authorization: Bearer {token}`, `Content-Type: application/json`
+- **Body:**
+  ```json
+  {
+    "name": "Laptop Dell XPS 15",
+    "description": "Laptop Dell XPS 15 15.6\" Intel i7 16GB RAM 512GB SSD",
+    "price": 1299.99,
+    "currency_id": 1,
+    "tax_cost": 104.00,
+    "manufacturing_cost": 700.00
+  }
+  ```
+- **Respuesta:** 201 Created
+
+#### Obtener Producto por ID
+- **GET** `/api/products/{id}`
+- **Headers:** `Authorization: Bearer {token}`
+- **Descripción:** Obtiene un producto con sus precios en diferentes divisas
+- **Respuesta:**
+  ```json
+  {
+    "success": true,
+    "message": "Producto cargado correctamente",
+    "data": {
+      "id": 1,
+      "name": "Laptop HP",
+      "description": "Laptop HP Pavilion 15.6\" Intel i5 8GB RAM 256GB SSD",
+      "price": "799.99",
+      "tax_cost": "64.00",
+      "manufacturing_cost": "450.00",
+      "currency": {
+        "id": 1,
+        "name": "USD",
+        "symbol": "$",
+        "exchange_rate": "1.000000"
+      },
+      "prices": [
+        {
+          "id": 1,
+          "price": "799.99",
+          "currency": {
+            "id": 1,
+            "name": "USD",
+            "symbol": "$",
+            "exchange_rate": "1.000000"
+          }
+        }
+      ]
+    }
+  }
+  ```
+
+#### Actualizar Producto
+- **PUT** `/api/products/{id}`
+- **Headers:** `Authorization: Bearer {token}`, `Content-Type: application/json`
+- **Body:** (Todos los campos son opcionales)
+  ```json
+  {
+    "name": "Laptop HP Actualizado",
+    "price": 849.99
+  }
+  ```
+
+#### Eliminar Producto
+- **DELETE** `/api/products/{id}`
+- **Headers:** `Authorization: Bearer {token}`
+- **Respuesta:** 204 No Content
+
+#### Obtener Precios de Producto
+- **GET** `/api/products/{id}/prices`
+- **Headers:** `Authorization: Bearer {token}`
+- **Descripción:** Obtiene todos los precios de un producto en diferentes divisas
+
+#### Crear Precio de Producto
+- **POST** `/api/products/{id}/prices`
+- **Headers:** `Authorization: Bearer {token}`, `Content-Type: application/json`
+- **Body:**
+  ```json
+  {
+    "price": 850.00,
+    "currency_id": 2
+  }
+  ```
+- **Respuesta:** 201 Created
+
+## Validación
+
+La API incluye validación de datos con mensajes personalizados en español:
+
+**Ejemplo de error de validación:**
+```json
+{
+  "success": false,
+  "message": "Error de validación",
+  "errors": {
+    "name": ["El nombre del producto es obligatorio."],
+    "currency_id": ["La divisa seleccionada no existe."]
+  }
+}
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+**Ejemplo de error de autenticación:**
+```json
+{
+  "success": false,
+  "message": "Debe autenticarse para acceder a esta ruta",
+  "errors": []
+}
+```
 
-## Contributing
+## Estructura de Respuestas
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Éxito
+```json
+{
+  "success": true,
+  "message": "Mensaje de éxito",
+  "data": { ... }
+}
+```
 
-## Code of Conduct
+### Error
+```json
+{
+  "success": false,
+  "message": "Mensaje de error",
+  "errors": { ... }
+}
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Tecnologías Utilizadas
 
-## Security Vulnerabilities
+- **Framework:** Laravel 13
+- **PHP:** 8.4
+- **Base de datos:** PostgreSQL
+- **Autenticación:** Laravel Sanctum
+- **Validación:** Form Requests
+- **Transformación de datos:** API Resources
+- **Documentación:** Postman Collection
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Modelo de Datos
 
-## License
+### Products
+- `id` - Identificador único
+- `name` - Nombre del producto
+- `description` - Descripción
+- `price` - Precio en divisa base
+- `currency_id` - ID de la divisa base
+- `tax_cost` - Costo de impuestos
+- `manufacturing_cost` - Costo de fabricación
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Currencies
+- `id` - Identificador único
+- `name` - Nombre de la divisa (USD, EUR, VES)
+- `symbol` - Símbolo ($, €, Bs)
+- `exchange_rate` - Tasa de cambio respecto a USD
+
+### ProductPrices
+- `id` - Identificador único
+- `product_id` - ID del producto
+- `currency_id` - ID de la divisa
+- `price` - Precio en la divisa especificada
+
+## Seguridad
+
+- Autenticación mediante tokens Bearer (Laravel Sanctum)
+- Validación de datos en todos los endpoints
+- Foreign keys con cascade on delete
+- Manejo estandarizado de excepciones
+
