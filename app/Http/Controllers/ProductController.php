@@ -16,7 +16,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return ProductResource::collection(Product::with('currency')->get());
+        return ProductResource::collection(Product::with('currency','prices.currency')->get());
     }
 
     /**
@@ -33,7 +33,7 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = Product::with('currency')->findOrFail($id);
+        $product = Product::with('currency','prices.currency')->findOrFail($id);
         return ProductResource::make($product);
     }
 
