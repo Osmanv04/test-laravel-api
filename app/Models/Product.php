@@ -8,6 +8,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
+    protected $fillable = [
+        'name',
+        'description',
+        'price',
+        'currency_id',
+        'tax_cost',
+        'manufacturing_cost',
+    ];
+
     protected function casts(): array
     {
         return [

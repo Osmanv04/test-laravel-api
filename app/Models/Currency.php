@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Currency extends Model
 {
+    protected $fillable = [
+        'name',
+        'symbol',
+        'exchange_rate',
+    ];
+
     protected function casts(): array
     {
         return [
