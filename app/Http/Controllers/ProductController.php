@@ -16,7 +16,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('currency')->get();
+        $products = Product::with('currency', 'prices.currency')->get();
 
         return $this->successResponse(ProductResource::collection($products), 'Productos cargados correctamente');
     }
